@@ -9,6 +9,7 @@ public class UIManager : MonoBehaviour
     [Header("UIObject")]
     public GameObject StartSceneUI;
     public GameObject TitleSceneUI;
+    public GameObject IngameUI;
 
     [Header("ButtonObject")]
     public Button gameStartBtn;

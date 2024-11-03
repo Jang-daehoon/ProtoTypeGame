@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class CharacterMovement : MonoBehaviour
 {
@@ -47,10 +48,18 @@ public class CharacterMovement : MonoBehaviour
     [Header("Particle&Trail")]
     [SerializeField] private TrailRenderer trailObj;
 
-
+    [Header("밀수있는 물체에 관한 정보")]
     [SerializeField] private float pushObjeOriginalMass;
     [SerializeField] private bool isCollidingWithPushObject = false;
     [SerializeField] private GameObject collisionGameObj;
+
+    [Header("공격정보")]
+    [SerializeField] private GameObject AttackRange;
+    [SerializeField] private float attackInterval;
+    [SerializeField] private bool canAttack;
+    [SerializeField] private float attackMoveDistance = 0.5f; // 공격 시 이동 거리
+    [SerializeField] private float attackMoveSpeed = 5f;      // 공격 시 이동 속도
+
     //보유중인 Componenets
     private Collider2D col;
     private Rigidbody2D rb;
@@ -67,6 +76,7 @@ public class CharacterMovement : MonoBehaviour
         col = GetComponent<Collider2D>();
         playerSprite = GetComponentInChildren<SpriteRenderer>();
         playerAnimator = GetComponent<Animator>();
+        canAttack = true;
     }
     private void OnEnable()
     {
@@ -143,6 +153,11 @@ public class CharacterMovement : MonoBehaviour
             {
                 Flip();
             }
+            if (InputVecX == 0)  // 키 입력이 없을 때 마우스 방향으로 플립
+            {
+                FlipToMouse();
+            }
+
             if (isCollidingWithPushObject)
             {
                 GameObject pushObject = collisionGameObj;
@@ -163,6 +178,10 @@ public class CharacterMovement : MonoBehaviour
                     }
                 }
             }
+            if(Input.GetMouseButtonDown(0) && canAttack == true)
+            {
+                StartCoroutine(Attack());
+            }
 
         }
     }
@@ -181,7 +200,15 @@ public class CharacterMovement : MonoBehaviour
             Move_CheckPlatform();
         }
     }
-
+    private IEnumerator Attack()
+    {
+        canAttack = false;
+        AttackRange.SetActive(true);
+        playerAnimator.SetTrigger("Attack");
+        yield return new WaitForSeconds(attackInterval);
+        AttackRange.SetActive(false);
+        canAttack = true;
+    }
     private void Move_CheckPlatform()
     {
         //플레이어 오브젝트의 Collider2D min,Center, Max 위치 정보
@@ -272,7 +299,20 @@ public class CharacterMovement : MonoBehaviour
             transform.localScale = localScale;
         }
     }
+    private void FlipToMouse()
+    {
+        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        float direction = mousePosition.x - transform.position.x;
 
+        // 마우스가 오른쪽에 있을 때 캐릭터가 오른쪽을 바라보도록, 반대일 때 왼쪽을 바라보도록 설정
+        if (direction > 0 && transform.localScale.x < 0 || direction < 0 && transform.localScale.x > 0)
+        {
+            isFlip = !isFlip;
+            Vector3 localScale = transform.localScale;
+            localScale.x *= -1f;
+            transform.localScale = localScale;
+        }
+    }
     private void GravitySet()
     {
         if (rb.velocity.y < 0 && !isGrounded)
@@ -362,7 +402,7 @@ public class CharacterMovement : MonoBehaviour
         //리타이어 시 게임 종료
 
     }
-
+  
     private void OnDrawGizmos()
     {
         // 바닥 체크 위치

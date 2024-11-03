@@ -31,6 +31,9 @@ public class GameManager : MonoBehaviour
         isDead = false;
         TutorialManager.Instance.Tutorials[0].SetActive(true);
         UIManager.Instance.TitleSceneUI.SetActive(false);
+        UIManager.Instance.IngameUI.SetActive(true);
         StartControlDescObj.SetActive(true);
+
+
     }
 }

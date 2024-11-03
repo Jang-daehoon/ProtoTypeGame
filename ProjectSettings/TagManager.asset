@@ -16,6 +16,7 @@ TagManager:
   - Key
   - Wall
   - PushObject
+  - PlayerAttack
   layers:
   - Default
   - TransparentFX
