@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
     public CharacterMovement Player;
     public bool isDialogStart;  //대화 진행중인지 확인하는 변수
+    public GameObject StartControlDescObj;
 
     [Header("PlayerStatus")]
     public int hp;
@@ -23,11 +24,13 @@ public class GameManager : MonoBehaviour
     {
         instance = this;
     }
-    private void Start()
+    public void GameStart()
     {
         hp = maxHp;
         mana = maxMana;
         isDead = false;
-        TutorialManager.Instance.firstTutorial.SetActive(true);
+        TutorialManager.Instance.Tutorials[0].SetActive(true);
+        UIManager.Instance.TitleSceneUI.SetActive(false);
+        StartControlDescObj.SetActive(true);
     }
 }

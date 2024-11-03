@@ -6,8 +6,7 @@ public class TutorialManager : MonoBehaviour
 {
     public static TutorialManager Instance;
 
-    public GameObject firstTutorial;
-    public GameObject SecondTutorial;
+    public GameObject[] Tutorials;
 
 
     private void Awake()

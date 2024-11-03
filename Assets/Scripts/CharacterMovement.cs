@@ -46,7 +46,11 @@ public class CharacterMovement : MonoBehaviour
 
     [Header("Particle&Trail")]
     [SerializeField] private TrailRenderer trailObj;
-    
+
+
+    [SerializeField] private float pushObjeOriginalMass;
+    [SerializeField] private bool isCollidingWithPushObject = false;
+    [SerializeField] private GameObject collisionGameObj;
     //보유중인 Componenets
     private Collider2D col;
     private Rigidbody2D rb;
@@ -70,6 +74,31 @@ public class CharacterMovement : MonoBehaviour
         rb.gravityScale = normalGravity;
         canDash = true;
     }
+
+    // 충돌 시 원래 mass 저장 및 충돌 상태 업데이트
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("PushObject"))
+        {
+            isCollidingWithPushObject = true;
+            collisionGameObj = collision.gameObject;
+            pushObjeOriginalMass = collisionGameObj.GetComponent<Rigidbody2D>().mass;
+        }
+    }
+
+    // 충돌이 끝나면 원래 mass 복구 및 상태 초기화
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("PushObject"))
+        {
+            isCollidingWithPushObject = false;
+            Rigidbody2D rb = collisionGameObj.GetComponent<Rigidbody2D>();
+            rb.mass = pushObjeOriginalMass;
+            rb.velocity = Vector2.zero;
+            collisionGameObj = null;
+        }
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if(collision.CompareTag("Trap"))
@@ -114,6 +143,27 @@ public class CharacterMovement : MonoBehaviour
             {
                 Flip();
             }
+            if (isCollidingWithPushObject)
+            {
+                GameObject pushObject = collisionGameObj;
+                if (pushObject != null)
+                {
+                    Rigidbody2D rb = pushObject.GetComponent<Rigidbody2D>();
+
+                    // LeftControl 키를 누르면 mass를 100으로 설정
+                    if (Input.GetKey(KeyCode.LeftControl))
+                    {
+                        rb.mass = 100;
+                    }
+                    // LeftControl 키를 떼면 원래 mass로 복구하고 velocity를 0으로 설정
+                    else
+                    {
+                        rb.mass = pushObjeOriginalMass;
+                        rb.velocity = Vector2.zero;
+                    }
+                }
+            }
+
         }
     }
 
@@ -290,6 +340,7 @@ public class CharacterMovement : MonoBehaviour
             gameObject.layer = 3;   //PlayerLayer로 변경   
         }
         else
+        //
         {
             GameManager.instance.hp--;
             Retire();

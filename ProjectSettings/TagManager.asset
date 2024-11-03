@@ -15,6 +15,7 @@ TagManager:
   - PadLock
   - Key
   - Wall
+  - PushObject
   layers:
   - Default
   - TransparentFX

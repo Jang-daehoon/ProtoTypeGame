@@ -9,6 +9,7 @@ public class StartCutScene : MonoBehaviour
 
     public Animator camAnim;
     private float originalMoveSpeed;
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if(collision.CompareTag("Player") && isCutSceneDone == false)

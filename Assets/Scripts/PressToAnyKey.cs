@@ -42,5 +42,7 @@ public class PressToAnyKey : MonoBehaviour
     void StartGame()
     {
         Debug.Log("게임 시작!");
+        UIManager.Instance.StartSceneUI.SetActive(false);
+        UIManager.Instance.TitleSceneUI.SetActive(true);
     }
 }
