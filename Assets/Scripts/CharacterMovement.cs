@@ -64,7 +64,7 @@ public class CharacterMovement : MonoBehaviour
     private Collider2D col;
     private Rigidbody2D rb;
     private SpriteRenderer playerSprite;
-    private Animator playerAnimator;
+    [HideInInspector]public Animator playerAnimator;
 
     //코루틴 정보
     private Coroutine DodgeCoroutine;
@@ -111,13 +111,21 @@ public class CharacterMovement : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.CompareTag("Trap"))
+        if (collision.CompareTag("Trap"))
         {
             PlayerHit = StartCoroutine(Hit());
         }
         else if (collision.CompareTag("DeadZone"))
         {
             Retire();
+        }
+        else if (collision.CompareTag("Item"))
+        {
+            collision.gameObject.GetComponent<Item>().GetItems();
+        }
+        else if(collision.CompareTag("EnemyBullet"))
+        {
+            PlayerHit = StartCoroutine(Hit());
         }
     }
     // Update is called once per frame

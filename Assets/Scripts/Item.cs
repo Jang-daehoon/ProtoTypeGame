@@ -28,6 +28,7 @@ public class Item : MonoBehaviour
             case ItemType.Potion:
                 Debug.Log("체력 1 회복!");
                 GameManager.instance.hp += 1;
+                Destroy(gameObject);
                 break;
             case ItemType.ManaPotion:
                 Debug.Log("마나 5 회복");

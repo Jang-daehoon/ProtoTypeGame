@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
     public CharacterMovement Player;
     public bool isDialogStart;  //대화 진행중인지 확인하는 변수
     public GameObject StartControlDescObj;
+    public CinemachineVirtualCamera vCam;
 
     [Header("PlayerStatus")]
     public int hp;
